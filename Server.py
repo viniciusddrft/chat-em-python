@@ -23,7 +23,7 @@ class Server():
             while True:
                 msg = ''
                 msg = sock_client.recv(1024)
-                print('she/he -> ' + msg.decode())
+                print(msg.decode())
                 if self.lista_de_clientes:
                     for client in self.lista_de_clientes:
                         if client != sock_client: 
@@ -36,6 +36,7 @@ class Server():
             while True:
                 msg = ''
                 msg = str(input(''))
+                msg = (self.nome+'-> '+msg)
                 for client in self.lista_de_clientes:
                     client.send(msg.encode())
 

@@ -24,7 +24,7 @@ class Client():
             while True:
                 msg = ''
                 msg = self.sock_client.recv(1024)
-                print('she/he -> ' + msg.decode())
+                print(msg.decode())
 
 
 
@@ -33,6 +33,7 @@ class Client():
             while True:
                 msg = ''
                 msg = str(input(''))
+                msg = (self.nome+'-> '+msg)
                 self.sock_client.send(msg.encode())
 
 
