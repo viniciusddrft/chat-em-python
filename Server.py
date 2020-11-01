@@ -8,23 +8,26 @@ from threading import Thread
 class Server():
 
     
-    def __init__(self , nome, port):
+    def __init__(self, nome, port):
         self.nome = nome
         self.port = port
-        self.sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.ip = '0.0.0.0'
- 
+        self.lista_de_clientes = []
 
 
-    def iniciar_servidor(self):
+    def multiclient(self, sock_client):
 
-
+        
 
         def receber_msg():
             while True:
                 msg = ''
                 msg = sock_client.recv(1024)
                 print('she/he -> ' + msg.decode())
+                if self.lista_de_clientes:
+                    for client in self.lista_de_clientes:
+                        if client != sock_client: 
+                            client.send(msg)
 
 
 
@@ -33,22 +36,31 @@ class Server():
             while True:
                 msg = ''
                 msg = str(input(''))
-                sock_client.send(msg.encode())
+                for client in self.lista_de_clientes:
+                    client.send(msg.encode())
 
 
 
-        try:
-            self.sock_server.bind((self.ip, self.port))
-            self.sock_server.listen(95)
-            print("listening in port :"+str(self.port))
+        thread_receber_msg = Thread(target=receber_msg)
+        thread_enviar_msg = Thread(target=enviar_msg)
+        thread_receber_msg.start()
+        thread_enviar_msg.start()
+        
 
+
+
+
+
+
+
+    def iniciar_servidor(self):
+        self.sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock_server.bind((self.ip, self.port))
+        self.sock_server.listen(95)
+        print("listening in port :"+str(self.port))
+        while True:
             (sock_client, address) = self.sock_server.accept()
             print("received from: " + address[0])
-
-            thread_receber_msg = Thread(target=receber_msg)
-            thread_enviar_msg = Thread(target=enviar_msg)
-            thread_receber_msg.start()
-            thread_enviar_msg.start()
-        except Exception as erro:
-            print("erro : "+str(erro))
-            sock_server.close()
+            self.lista_de_clientes.append(sock_client)
+            thread_client = Thread(target=self.multiclient,args=[sock_client])
+            thread_client.start()
