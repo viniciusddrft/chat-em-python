@@ -4,6 +4,10 @@ import sys
 import time
 from threading import Thread
 
+clock = time.ctime()
+clock = clock.split()
+
+
 
 class Client():
     
@@ -33,7 +37,7 @@ class Client():
             while True:
                 msg = ''
                 msg = str(input(''))
-                msg = (self.nome+'-> '+msg)
+                msg = (clock[3] + '| ' + self.nome + ' -> ' + msg)
                 self.sock_client.send(msg.encode())
 
 

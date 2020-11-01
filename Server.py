@@ -4,6 +4,10 @@ import sys
 import time
 from threading import Thread
 
+clock = time.ctime()
+clock = clock.split()
+
+
 
 class Server():
 
@@ -36,7 +40,7 @@ class Server():
             while True:
                 msg = ''
                 msg = str(input(''))
-                msg = (self.nome+'-> '+msg)
+                msg = (clock[3] + '| ' + self.nome + ' -> ' + msg)
                 for client in self.lista_de_clientes:
                     client.send(msg.encode())
 
