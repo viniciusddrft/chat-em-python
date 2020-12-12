@@ -4,8 +4,6 @@ import sys
 import time
 from threading import Thread
 
-clock = time.ctime()
-clock = clock.split()
 
 
 
@@ -17,13 +15,10 @@ class Client():
         self.port = port
         self.sock_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.ip = ip
- 
-
 
     def iniciar_cliente(self):
 
 
-                
         def receber_msg():
             while True:
                 msg = ''
@@ -37,20 +32,26 @@ class Client():
             while True:
                 msg = ''
                 msg = str(input(''))
-                msg = (clock[3] + '| ' + self.nome + ' -> ' + msg)
                 self.sock_client.send(msg.encode())
+
+
+
+
 
 
 
         try:
             self.sock_client.connect((str(self.ip),int(self.port)))
-            print('connected in : '+self.ip)
-
-            thread_receber_msg = Thread(target=receber_msg)
-            thread_enviar_msg = Thread(target=enviar_msg)
-            thread_receber_msg.start()
-            thread_enviar_msg.start()
-
-        except Exception as erro:
-            print("erro : "+str(erro))
-            self.sock_client.close()
+            self.sock_client.send(self.nome.encode())
+            mensagem = self.sock_client.recv(1024)
+            print(mensagem.decode())
+            if 'esse nome está em uso tente dnv com outro nome' in mensagem.decode():
+                sys.exit()
+            else:
+                print('connected in : '+self.ip)
+                thread_receber_msg = Thread(target=receber_msg)
+                thread_enviar_msg = Thread(target=enviar_msg)
+                thread_receber_msg.start()
+                thread_enviar_msg.start()
+        except Exception as error:
+            print(error)
