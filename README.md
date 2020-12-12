@@ -1,3 +1,8 @@
+Em breve mais melhorias
+
+
+
+
 um simples chat em python para servir de base pro meu chat em C
 
 COMO USAR
