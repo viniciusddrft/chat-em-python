@@ -27,15 +27,27 @@ class Server():
 
 
     def listenning_clientes(self,sock_client, nome, address):
-        while True:
+        cliente_online = True
+        while cliente_online:
+
             mensagem = sock_client.recv(1024)
-            if mensagem in self.comandos:
-                print('--comando--')
-            else:
+            
+            if mensagem.decode() in self.comandos:# comandos 
+                if '/exit' in mensagem.decode():#comando para sair
+                    for cliente in self.lista_de_clientes:
+                        if cliente['nome'] == nome:
+                            print(nome.decode() + ' disconnected ip -> ' + address[0])
+                            sock_client.close()
+                            self.lista_de_clientes.remove(cliente)
+                            cliente_online = False
+                            cliente['thread']._delete()   
+
+
+            else:# chat geral
                 for cliente in self.lista_de_clientes:
                     if cliente['socket'] != sock_client: 
                         cliente['socket'].send(mensagem)
-
+        
 
 
 
