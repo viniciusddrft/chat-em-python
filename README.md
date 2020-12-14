@@ -1,4 +1,4 @@
-Em breve mais melhorias
+Eu mudei a maneira que irei construir o chat e ele deve ficar pronto em breve
 
 
 
